@@ -34,7 +34,7 @@ public class HotLimter {
         if(map.containsKey(id)) {
             ProtectThing thing = map.get(id);
             if(thing.getCount()==0){
-                System.out.println("缓存不足而拒绝");
+                //System.out.println("缓存不足而拒绝");
                 return 0;
             }
             Jedis jedis = pool.getResource();

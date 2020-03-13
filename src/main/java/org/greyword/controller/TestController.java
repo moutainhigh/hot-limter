@@ -42,7 +42,7 @@ public class TestController {
             return 1;
         });
         limit.setPool(pool);
-        this.create(1L,"asd",3);
+        this.create(1L,"asd",5);
     }
     public void create(Long id,String info,Integer count){
         GoodThing good = new GoodThing();
