@@ -1,0 +1,13 @@
+
+
+spring:
+  application:
+    name: hot-limter
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 0
+    database: 3
+server:
+  port: 7563
+
