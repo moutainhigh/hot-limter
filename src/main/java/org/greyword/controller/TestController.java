@@ -3,7 +3,6 @@ package org.greyword.controller;
 import org.greyword.entity.GoodThing;
 import org.greyword.entity.ProtectThing;
 import org.greyword.hot.limter.HotLimter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.JedisPool;
@@ -37,6 +36,10 @@ public class TestController {
         limit.setBuyGood((id)->{
             System.out.println("不是保护商品");
             return Math.random()>0.5?1:0;
+        });
+        limit.setBuySuccess((id)->{
+            System.out.println("保护商品购买成功");
+            return 1;
         });
         limit.setPool(pool);
         this.create(1L,"asd",3);

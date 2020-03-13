@@ -14,12 +14,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class HotLimter {
-    private Map<Long, ProtectThing> map = new HashMap<Long, ProtectThing>();
-    private Function<Long,ProtectThing> whenNoContain;
-    private Function<Long,Integer> buyGood;
+    private Map<Long, ProtectThing> map = new HashMap<>();
+    private Function<Long,ProtectThing> whenNoContain; //不是保护商品的查询策略
+    private Function<Long,Integer> buyGood;  //不是保护商品的购买策略
+    private Function<Long,Integer> buySuccess;  //保护商品购买成功的执行策略
     private JedisPool pool;
     private Jedis jedis;
-    ThreadPoolExecutor executor;
+    private ThreadPoolExecutor executor;
     private String prefix = "org:greyword:hot:limter:";
 
     //获取商品信息的方法，非保护商品会返回默认方法
@@ -39,10 +40,17 @@ public class HotLimter {
             Jedis jedis = pool.getResource();
             Long count = jedis.incr(prefix+"count:"+id);
             if((count & count + 1) == 0){
-                System.out.println("尝试购买");
                 Long decr = jedis.decr(prefix+"total:"+id);
-                if(decr<=0)jedis.publish(prefix,Long.toString(id));
-                return decr>=0?1:0;
+                if(decr<=0){
+                    jedis.publish(prefix,Long.toString(id));
+                    jedis.del(prefix+"total:"+thing.getId());
+                    jedis.del(prefix+"count:"+thing.getId());
+                }
+                if(decr>=0){
+                    return this.buySuccess.apply(id);
+                }
+                System.out.println("尝试购买但失败");
+                return 0;
             }
             jedis.close();
             System.out.println("流量被过滤");
@@ -64,6 +72,10 @@ public class HotLimter {
 
     public void setBuyGood(Function<Long, Integer> buyGood) {
         this.buyGood=buyGood;
+    }
+
+    public void setBuySuccess(Function<Long, Integer> buySuccess) {
+        this.buySuccess = buySuccess;
     }
 
     public void setPool(JedisPool pool) {
