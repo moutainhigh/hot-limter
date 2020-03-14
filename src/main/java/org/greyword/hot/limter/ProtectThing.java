@@ -1,4 +1,4 @@
-package org.greyword.entity;
+package org.greyword.hot.limter;
 
 public interface ProtectThing {
     Long getId();

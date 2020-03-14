@@ -1,5 +1,8 @@
 package org.greyword.entity;
 
+import org.greyword.hot.limter.ProtectThing;
+
+
 public class GoodThing implements ProtectThing {
     private Long id;
     private Integer count;

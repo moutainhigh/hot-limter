@@ -1,7 +1,7 @@
 package org.greyword.controller;
 
 import org.greyword.entity.GoodThing;
-import org.greyword.entity.ProtectThing;
+import org.greyword.hot.limter.ProtectThing;
 import org.greyword.hot.limter.HotLimter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +23,18 @@ public class TestController {
         else
             return "商品售空";
     }
+    @RequestMapping("/create")
+    public void create(Long id,String info,Integer count){
+        GoodThing good = new GoodThing();
+        good.setId(id);
+        good.setCount(count);
+        good.setInfo(info);
+        limit.add(good);
+    }
+    @RequestMapping("/del")
+    public void del(Long id){
+        limit.del(id);
+    }
     public TestController(JedisPool pool){
         this.pool=pool;
         limit = new HotLimter();
@@ -43,12 +55,5 @@ public class TestController {
         });
         limit.setPool(pool);
         this.create(1L,"asd",5);
-    }
-    public void create(Long id,String info,Integer count){
-        GoodThing good = new GoodThing();
-        good.setId(id);
-        good.setCount(count);
-        good.setInfo(info);
-        limit.add(good);
     }
 }
